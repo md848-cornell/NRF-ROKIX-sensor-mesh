@@ -1,0 +1,4 @@
+config BT_GATT_NUS
+	bool "Nordic UART service"
+	help
+	  Enable Nordic UART service.

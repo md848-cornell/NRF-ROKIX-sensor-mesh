@@ -1,0 +1,12 @@
+menuconfig BT_GATT_NUS_C
+	bool "Nordic UART service client"
+	help
+	  Enable BLE GATT Nordic UART service client.
+
+if BT_GATT_NUS_C
+
+module = BT_GATT_NUS_C
+module-str = NUS Client
+source "${ZEPHYR_BASE}/subsys/logging/Kconfig.template.log_config"
+
+endif # BT_GATT_NUS_C

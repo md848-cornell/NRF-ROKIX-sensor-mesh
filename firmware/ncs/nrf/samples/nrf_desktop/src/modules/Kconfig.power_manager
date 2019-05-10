@@ -1,0 +1,32 @@
+#
+# Copyright (c) 2018 Nordic Semiconductor
+#
+# SPDX-License-Identifier: LicenseRef-BSD-5-Clause-Nordic
+#
+
+menu "Power manager"
+
+config DESKTOP_POWER_MANAGER_ENABLE
+	bool "Enable power management"
+	depends on HAS_STATE_DEEP_SLEEP_1
+	select DEVICE_POWER_MANAGEMENT
+	select SYS_POWER_DEEP_SLEEP_STATES
+	help
+	  Enable power management, which will put the device to low-power mode
+	  if it is idle.
+
+if DESKTOP_POWER_MANAGER_ENABLE
+
+config DESKTOP_POWER_MANAGER_TIMEOUT
+	int "Power down timeout [s]"
+	default 120
+	help
+	  Time in seconds after which the device will enter low-power mode.
+
+module = DESKTOP_POWER_MANAGER
+module-str = power manager
+source "subsys/logging/Kconfig.template.log_config"
+
+endif
+
+endmenu

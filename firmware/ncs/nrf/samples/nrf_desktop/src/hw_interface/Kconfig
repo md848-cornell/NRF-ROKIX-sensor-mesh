@@ -1,0 +1,274 @@
+#
+# Copyright (c) 2018 Nordic Semiconductor
+#
+# SPDX-License-Identifier: LicenseRef-BSD-5-Clause-Nordic
+#
+
+menu "Hardware interface modules"
+
+config DESKTOP_PORT_STATE
+	string "Port state"
+	default ""
+	help
+	  This option specifies a path to the port state file.
+	  Port state file specifies how ports are set when board is turned
+	  on and off.
+
+comment "Motion configuration"
+
+choice
+	prompt "Select motion interface"
+	default DESKTOP_MOTION_NONE
+
+config DESKTOP_MOTION_NONE
+	bool "Disable motion"
+
+config DESKTOP_MOTION_OPTICAL_ENABLE
+	bool "Motion from optical sensor"
+
+config DESKTOP_MOTION_BUTTONS_ENABLE
+	bool "Motion from buttons"
+
+config DESKTOP_MOTION_SIMULATED_ENABLE
+	bool "Simulated motion"
+	depends on SHELL
+
+endchoice
+
+config DESKTOP_MOTION_SIMULATED_EDGE_TIME
+	int "Time for transition between two points in a trajectory [ms]"
+	depends on DESKTOP_MOTION_SIMULATED_ENABLE
+	range 8 1000000
+	default 16
+	help
+	  Must be power of two (calculations speedup).
+
+config DESKTOP_MOTION_SIMULATED_SCALE_FACTOR
+	int "Scale factor for given shape"
+	depends on DESKTOP_MOTION_SIMULATED_ENABLE
+	range 1 5
+	default 2
+
+config DESKTOP_SPI_FREQ_HZ
+	int "SPI clock frequency for communication with the optical sensor"
+	depends on DESKTOP_MOTION_OPTICAL_ENABLE
+	default 1800000
+	range 500000 2500000
+
+config DESKTOP_OPTICAL_DEFAULT_CPI
+	int "Default CPI resolution of the mouse optical sensor"
+	depends on DESKTOP_MOTION_OPTICAL_ENABLE
+	default 1600
+	range 100 12000
+	help
+	  This value is set on firmware start. It can be changed in runtime
+	  using the configuration channel.
+
+config DESKTOP_OPTICAL_RUN_DOWNSHIFT_TIME_MS
+	int "Default run downshift time of the mouse optical sensor"
+	depends on DESKTOP_MOTION_OPTICAL_ENABLE
+	default 500
+	range 10 2550
+	help
+	  Time after which sensor goes from "Run" to "Rest 1" mode.
+	  This value is set on firmware start. It can be changed in runtime
+	  using the configuration channel.
+
+config DESKTOP_OPTICAL_REST1_DOWNSHIFT_TIME_MS
+	int "Default Rest 1 downshift time of the mouse optical sensor"
+	depends on DESKTOP_MOTION_OPTICAL_ENABLE
+	default 9220
+	range 320 81600
+	help
+	  Time after which sensor goes from "Rest 1" to "Rest 2" mode.
+	  This value is set on firmware start. It can be changed in runtime
+	  using the configuration channel.
+
+config DESKTOP_OPTICAL_REST2_DOWNSHIFT_TIME_MS
+	int "Default Rest 2 downshift time of the mouse optical sensor"
+	depends on DESKTOP_MOTION_OPTICAL_ENABLE
+	default 150000
+	range 3200 816000
+	help
+	  Time after which sensor goes from "Rest 2" to "Rest 3" mode.
+	  This value is set on firmware start. It can be changed in runtime
+	  using the configuration channel.
+
+comment "Buttons configuration"
+
+choice
+	prompt "Select buttons interface"
+	default DESKTOP_BUTTONS_NONE
+
+config DESKTOP_BUTTONS_NONE
+	bool "Disable buttons"
+
+config DESKTOP_BUTTONS_MATRIX_ENABLE
+	bool "Buttons scanned from key matrix"
+
+endchoice
+
+config DESKTOP_KEYMAP
+	string "Keymap"
+	depends on !DESKTOP_BUTTONS_NONE
+	default ""
+	help
+	  This option specifies a path to the keymap file.
+
+config DESKTOP_BUTTONS_MATRIX_SCAN_INTERVAL
+	int "Key matrix scan interval in ms"
+	depends on DESKTOP_BUTTONS_MATRIX_ENABLE
+	default 15
+	help
+	  Interval at which key matrix is scanned.
+
+comment "Wheel configuration"
+	depends on HAS_DTS_QDEC
+
+config DESKTOP_WHEEL_ENABLE
+	bool "Enable wheel hardware interface"
+	depends on HAS_DTS_QDEC
+
+config DESKTOP_WHEEL_SENSOR_VALUE_DIVIDER
+	int "Wheel sensor value divider"
+	depends on DESKTOP_WHEEL_ENABLE
+	range 1 2048
+	default 1
+	help
+	  A value obtained from the wheel sensor will be divided
+	  by provided argument before being processed further.
+
+config DESKTOP_WHEEL_INVERT_AXIS
+	bool "Invert wheel axis"
+	depends on DESKTOP_WHEEL_ENABLE
+	help
+	  Switch the orientation of the wheel sensor.
+
+comment "LED configuration"
+
+config DESKTOP_LED_ENABLE
+	bool "Enable LED hardware interface"
+
+config DESKTOP_LED_STATE
+	string "LED state"
+	depends on DESKTOP_LED_ENABLE
+	default ""
+	help
+	  This option specifies a path to the led state file.
+
+config DESKTOP_LED_COUNT
+	int "Number of LEDs in use"
+	depends on DESKTOP_LED_ENABLE
+	default 0
+
+config DESKTOP_LED_COLOR_COUNT
+	int "Number of color channels per diode"
+	depends on DESKTOP_LED_ENABLE
+	default 3
+
+config DESKTOP_LED_BRIGHTNESS_MAX
+	int "Maximum value for LED brightness"
+	depends on DESKTOP_LED_ENABLE
+	default 255
+
+comment "Battery charger configuration"
+
+choice
+	prompt "Select battery charging interface"
+	default DESKTOP_BATTERY_NONE
+
+config DESKTOP_BATTERY_NONE
+	bool "No battery charging"
+
+config DESKTOP_BATTERY_DISCRETE
+	bool "Discrete battery charger"
+
+endchoice
+
+config DESKTOP_BATTERY_MIN_LEVEL
+	int "Minimum battery voltage [mV] that corresponds to 0% level"
+	depends on DESKTOP_BATTERY_DISCRETE
+	default 3100
+
+config DESKTOP_BATTERY_MAX_LEVEL
+	int "Maximum battery voltage [mV] that corresponds to 100% level"
+	depends on DESKTOP_BATTERY_DISCRETE
+	default 4180
+
+config DESKTOP_BATTERY_VOLTAGE_DIVIDER_UPPER
+	int "Upper resistor in battery measurement voltage divider [kOhm]"
+	depends on DESKTOP_BATTERY_DISCRETE
+	default 1500
+	help
+	  Output voltage is measured on the lower resistor.
+
+config DESKTOP_BATTERY_VOLTAGE_DIVIDER_LOWER
+	int "Lower resistor in battery measurement voltage divider [kOhm]"
+	depends on DESKTOP_BATTERY_DISCRETE
+	default 180
+	help
+	  Output voltage is measured on the lower resistor.
+
+config DESKTOP_BATTERY_POLL_INTERVAL_MS
+	int "Time between the subsequent battery measurements [ms]"
+	depends on DESKTOP_BATTERY_DISCRETE
+	default 10000
+	range 500 120000
+
+config DESKTOP_BATTERY_MONITOR_ENABLE_PIN
+	int "Battery monitoring enable pin"
+	depends on DESKTOP_BATTERY_DISCRETE
+	help
+	  A pin which enables the battery measurement circuit.
+
+config DESKTOP_BATTERY_CSO_PIN
+	int "Charging status pin"
+	depends on DESKTOP_BATTERY_DISCRETE
+	help
+	  A pin number to which CSO output is connected.
+
+config DESKTOP_BATTERY_CSO_FREQ
+	int "CSO switching frequency (in Hz) on error state"
+	depends on DESKTOP_BATTERY_DISCRETE
+	default 1000
+	help
+	  A frequency with which CSO pin switches state when charging
+	  error occurs.
+
+comment "Log level configuration"
+
+module = DESKTOP_BOARD
+module-str = board module
+source "subsys/logging/Kconfig.template.log_config"
+
+if !DESKTOP_MOTION_NONE
+module = DESKTOP_MOTION
+module-str = motion module
+source "subsys/logging/Kconfig.template.log_config"
+endif
+
+if !DESKTOP_BUTTONS_NONE
+module = DESKTOP_BUTTONS
+module-str = buttons module
+source "subsys/logging/Kconfig.template.log_config"
+endif
+
+if DESKTOP_WHEEL_ENABLE
+module = DESKTOP_WHEEL
+module-str = wheel module
+source "subsys/logging/Kconfig.template.log_config"
+endif
+
+if DESKTOP_LED_ENABLE
+module = DESKTOP_LED
+module-str = LED module
+source "subsys/logging/Kconfig.template.log_config"
+endif
+
+if !DESKTOP_BATTERY_NONE
+module = DESKTOP_BATTERY
+module-str = battery module
+source "subsys/logging/Kconfig.template.log_config"
+endif
+
+endmenu

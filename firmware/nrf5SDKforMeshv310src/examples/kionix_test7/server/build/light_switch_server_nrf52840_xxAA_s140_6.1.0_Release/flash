@@ -1,0 +1,8 @@
+#!/bin/bash
+
+nrfutil pkg generate --application light*.hex --hw-version 52 --application-version 1 --sd-req 0x00A9,0x00AE kionix_test.zip
+
+nrfutil dfu usb-serial -pkg kionix_test.zip -p /dev/ttyACM0
+while [ 0 -ne $? ]; do
+	nrfutil dfu usb-serial -pkg kionix_test.zip -p /dev/ttyACM0
+done

@@ -1,0 +1,5 @@
+#!/bin/bash
+
+nrfutil pkg generate --application Output/Debug/Exe/rokixsensornode_ex.hex --hw-version 52 --application-version 1 --sd-req 0x00A9,0x00AE Output/Debug/Exe/rokixsensornode_ex.zip
+
+nrfutil dfu serial -pkg Output/Debug/Exe/rokixsensornode_ex.zip -p /dev/ttyACM0

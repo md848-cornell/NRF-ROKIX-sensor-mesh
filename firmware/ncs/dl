@@ -1,0 +1,4 @@
+git clone https://github.com/NordicPlayground/fw-nrfconnect-zephyr.git zephyr
+git clone https://github.com/NordicPlayground/fw-nrfconnect-mcuboot.git mcuboot
+git clone https://github.com/NordicPlayground/fw-nrfconnect-nrf.git nrf
+git clone https://github.com/NordicPlayground/nrfxlib.git nrfxlib
