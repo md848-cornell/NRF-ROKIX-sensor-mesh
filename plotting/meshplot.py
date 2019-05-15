@@ -13,7 +13,6 @@ import plotshape
 from plotshape import *
 
 JLINK_EXE = '/opt/SEGGER/JLink/JLinkExe'
-JLINK_CLIENT = '/opt/SEGGER/JLink/JLinkRTTClient'
 DEBUG = 0
 
 class RTT:
@@ -52,6 +51,8 @@ class RTT:
                 if 'BSENSE msg' in line:
                     print(self.parse_line(line))
                     #print(line)
+                elif 'provision' in line.lower():
+                    print(line)
                 else:
                     if DEBUG: print(line)
             s = lines[-1]
@@ -96,6 +97,10 @@ class RTT:
                         nodes[addr][1][1] = float(r[3])
                         nodes[addr][1][2] = float(r[4])
 
+                elif 'provision' in line.lower():
+                    print(line)
+                elif 'configur' in line.lower():
+                    print(line)
                 else:
                     if DEBUG: print(line)
             s = lines[-1]
@@ -161,7 +166,9 @@ class RTT:
 def main():
     positions = [\
             [8,0,0],\
-            [-8,0,0]]
+            [-8,0,0],\
+            [0,8,0],\
+            [0,-8,0]]
     rtt = RTT()
     rtt.plot_sensor(positions)
 

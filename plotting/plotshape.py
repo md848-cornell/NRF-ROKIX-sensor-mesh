@@ -46,8 +46,9 @@ class ShapePlot:
 
 			# calculate corresponding z
 			if normal[2] == 0: normal[2] = 1e-17
-			zi = (-normal[0] * xx - normal[1] * yy - d) * 1. / normal[2]
-
+			zi = (normal[0] * xx - normal[1] * yy - d) * 1. / normal[2]
+			
+			zi *= -1 * 80
 
 			zs += [np.multiply(g, zi)]
 
