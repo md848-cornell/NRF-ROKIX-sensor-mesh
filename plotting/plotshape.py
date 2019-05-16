@@ -3,12 +3,14 @@ import numpy as np
 from mpl_toolkits.mplot3d import Axes3D
 import math
 
+import matplotlib.cm as mcm
 
 
 G1_M = 16000
 BOUND = 10
 VAR = 5
 
+scalef = 10#80
 
 class ShapePlot:
 
@@ -48,7 +50,7 @@ class ShapePlot:
 			if normal[2] == 0: normal[2] = 1e-17
 			zi = (normal[0] * xx - normal[1] * yy - d) * 1. / normal[2]
 			
-			zi *= -1 * 80
+			zi *= -1 * scalef
 
 			zs += [np.multiply(g, zi)]
 
@@ -56,7 +58,7 @@ class ShapePlot:
 		# plot the surface
 		self.plt3d.cla()
 		self.plt3d.set_zlim3d(-1,1)
-		self.plt3d.plot_surface(xx, yy, z)
+		self.plt3d.plot_surface(xx, yy, z, cmap=mcm.coolwarm, linewidth=0, antialiased=False)
 		plt.draw()
 		plt.pause(1e-17)
 
@@ -96,7 +98,7 @@ def plot_surfaces(vecs, points, plotblock=True):
 	z = (1.0*sum(zs))/len(zs)
 	# plot the surface
 	plt3d = plt.figure().gca(projection='3d')
-	plt3d.plot_surface(xx, yy, z)
+	plt3d.plot_surface(xx, yy, z, cmap=mcm.coolwarm, linewidth=0, antialiased=False)
 	plt.show(block=plotblock)
 
 def plot_surface(vec, center_point=[0,0,0], plotblock=True):
@@ -119,7 +121,7 @@ def plot_surface(vec, center_point=[0,0,0], plotblock=True):
 
 	# plot the surface
 	plt3d = plt.figure().gca(projection='3d')
-	plt3d.plot_surface(xx, yy, z)
+	plt3d.plot_surface(xx, yy, z, cmap=mcm.coolwarm, linewidth=0, antialiased=False)
 	plt.show(block=plotblock)
 
 
